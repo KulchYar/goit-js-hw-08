@@ -12,9 +12,6 @@ console.log(galleryItems);
 const list = document.querySelector(".gallery")
 
 list.insertAdjacentHTML("beforeend", createMarkup(galleryItems));
-list.addEventListener("click", (event) =>  {
-    event.preventDefault();
-})
 
 
 function createMarkup(arr) {

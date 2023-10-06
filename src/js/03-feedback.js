@@ -41,4 +41,4 @@ if (feedbackForm) {
     feedbackForm.addEventListener('input', throttle(saveForm, 500))
     feedbackForm.addEventListener('submit', handleSubmit)
 }
-document.addEventListener('load', formFiedls)
+document.addEventListener('load', formFields)
