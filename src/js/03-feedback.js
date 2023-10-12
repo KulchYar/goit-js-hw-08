@@ -1,44 +1,32 @@
 import throttle from 'lodash.throttle';
 
-function saveForm() {
-    const emailInput = document.querySelector('input[name="email"]')
-    const messageInput = document.querySelector('textarea[name="message"]')
-    const feedbackFormState = {
-        email: emailInput.value,
-        message: messageInput.value,
-    }
+const form = document.querySelector(".feedback-form")
+const email = document.querySelector('[name="email"]')
+const textarea = document.querySelector('[name="message"]')
 
-    localStorage.setItem('feedback-form-state', JSON.stringify(feedbackFormState));
+form.addEventListener('input', throttle(onInput, 500))
+function onInput(event) {
+    const data = JSON.parse(localStorage.getItem('feedback-form-state')) || {}
+    data[event.target.name] = event.target.value;
+    localStorage.setItem('feedback-form-state',JSON.stringify(data))
+}
+form.addEventListener('submit', onSubmit)
+function onSubmit() {
+    if (!email.value || !textarea.value) {
+     alert('Please fill in all fields')
+    }
+    else {
+        console.log(`email: ${email.value}, message: ${textarea.value}`);
+        localStorage.removeItem('feedback-form-state')
+        form.reset()
+    }
+}
+window.addEventListener('load', onLoad)
+function onLoad() {
+    const dataOn = JSON.parse(localStorage.getItem('feedback-form-state'))
+    if (dataOn) {
+        textarea.value = dataOn.message || "";
+        email.value = dataOn.email || "";
+    }
 }
 
-
-function formFields() {
-    const feedbackFormString = localStorage.getItem('feedback-form-state');
-    if (feedbackFormString) {
-        const feedbackFormState = JSON.parse(feedbackFormString);
-        const emailInput = document.querySelector('input[name="email"]')
-        const messageInput = document.querySelector('textarea[name="message"]')
-        emailInput.value = feedbackFormState.email;
-        messageInput.value = feedbackFormState.message
-    }
-}
-
-function handleSubmit(event) {
-    event.preventDefault();
-    const emailInput = document.querySelector('input[name="email"]')
-    const messageInput = document.querySelector('textarea[name="message"]')
-    const feedbackFormState = {
-        email: emailInput.value,
-        message: messageInput.value,
-    }
-    localStorage.removeItem('feedback-form-state')
-    emailInput.value = '';
-    messageInput.value = '';
-};
-
-const feedbackForm = document.querySelector('.feedback-form');
-if (feedbackForm) {
-    feedbackForm.addEventListener('input', throttle(saveForm, 500))
-    feedbackForm.addEventListener('submit', handleSubmit)
-}
-document.addEventListener('load', formFields)
